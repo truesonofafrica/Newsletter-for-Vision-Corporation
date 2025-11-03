@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const app = express();
 const cors = require('cors');
 
-app.use(cors);
+app.use(cors());
 
 const newsletterRoute = require('./routes/newsletterRoute');
 app.use(express.json());
