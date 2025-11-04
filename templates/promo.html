@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{subject}}</title>
+  </head>
+  <body
+    style="
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      padding: 30px;
+    "
+  >
+    <div
+      style="
+        max-width: 600px;
+        background: #fff;
+        margin: 0 auto;
+        padding: 20px;
+        border-radius: 8px;
+      "
+    >
+      <h2 style="color: #333">{{heading}}</h2>
+      <p style="color: #555">{{message}}</p>
+
+      <a
+        href="{{buttonUrl}}"
+        style="
+          display: inline-block;
+          background: #007bff;
+          color: #fff;
+          padding: 10px 15px;
+          text-decoration: none;
+          border-radius: 5px;
+        "
+      >
+        {{buttonText}}
+      </a>
+
+      <!-- Divider line -->
+      <hr
+        style="border: none; border-top: 1px solid #ddd; margin: 30px 0 10px"
+      />
+
+      <!-- Unsubscribe Section -->
+      <p
+        style="
+          font-size: 13px;
+          color: #888;
+          text-align: center;
+          margin-top: 20px;
+        "
+      >
+        You’re receiving this email because you subscribed to our newsletter.
+        <br />
+        If you no longer wish to receive these emails,
+        <a
+          href="{{unsubscribeUrl}}"
+          style="color: #007bff; text-decoration: none"
+          >unsubscribe here</a
+        >.
+      </p>
+    </div>
+  </body>
+</html>

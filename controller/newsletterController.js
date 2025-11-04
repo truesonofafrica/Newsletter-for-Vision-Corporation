@@ -1,24 +1,7 @@
-const nodemailer = require('nodemailer');
-const path = require('path');
-const fs = require('fs');
-const handlebars = require('handlebars');
+const jwt = require('jsonwebtoken');
 const Subscriber = require('../model/subscriberModel');
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: { user: process.env.GMAIL, pass: process.env.GMAIL_APP_PASSWORD },
-});
-
-// (async () => {
-//   const info = await transporter.sendMail({
-//     to: GMAIL,
-//     subject: 'Hello ✔',
-//     text: 'Hello world?', // plain‑text body
-//     html: '<b>Hello world?</b>', // HTML body
-//   });
-
-//   console.log('Message sent:', info.messageId);
-// })();
+const sendNewsletter = require('../brevoMail');
+const { renderTemplate } = require('../utils/renderTemplate');
 
 exports.subscribeUser = async (req, res) => {
   try {
@@ -52,7 +35,15 @@ exports.subscribeUser = async (req, res) => {
 
 exports.unsubscribeUser = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, token } = req.query;
+    if (!email || !token)
+      return res.status(400).json({ message: 'Email and token are required' });
+
+    const decoded = jwt.verify(token, process.env.UNSUBSCRIBE_SECRET);
+
+    if (decoded.email !== email) {
+      return res.status(403).json({ message: 'Invalid unsubscribe token' });
+    }
 
     const subscriber = await Subscriber.findOne({ email });
 
@@ -71,37 +62,31 @@ exports.unsubscribeUser = async (req, res) => {
   }
 };
 
-exports.sendNewsletter = async (req, res) => {
+exports.sendNewsletterToAll = async (req, res) => {
   try {
     const subscribers = await Subscriber.find({ subscribed: true });
 
     if (!subscribers.length)
       res.status(200).json({ message: 'No active subscribers' });
 
-    const templatePath = path.join(
-      process.cwd(),
-      'templates',
-      'newsletter.html'
-    );
-
-    console.log(templatePath);
-
-    const source = fs.readFileSync(templatePath, 'utf8');
-    const template = handlebars.compile(source);
+    const { templateName, subject, heading, message, buttonText, buttonUrl } =
+      req.body;
 
     for (const subscriber of subscribers) {
-      const unsubscribeLink = `${process.env.FRONTEND_URL}/unsubscribe?email=${subscriber.email}`;
+      const token = subscriber.generateUnsubscribeToken();
 
-      const htmlToSend = template({
-        unsubscribe_link: unsubscribeLink,
+      const unsubscribeUrl = `${process.env.FRONTEND_URL}/unsubscribe?email=${subscriber.email}&token=${token}`;
+
+      const htmlContent = renderTemplate(templateName, {
+        subject,
+        heading,
+        message,
+        buttonText,
+        buttonUrl,
+        unsubscribeUrl,
       });
 
-      await transporter.sendMail({
-        from: `"Vision Corporation" <${process.env.GMAIL}>`,
-        to: subscriber.email,
-        subject: '🌿 Latest Updates from Vision Corporation',
-        html: htmlToSend,
-      });
+      await sendNewsletter(subscriber.email, subject, htmlContent);
     }
 
     res
