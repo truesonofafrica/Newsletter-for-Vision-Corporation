@@ -94,6 +94,7 @@ exports.sendNewsletterToAll = async (req, res) => {
       .json({ message: 'Newsletter sent successfully to all subscribers.' });
   } catch (error) {
     console.error('Error sending newsletter:', error);
+    console.log(error);
     res.status(500).json({ error: 'Failed to send newsletter' });
   }
 };
