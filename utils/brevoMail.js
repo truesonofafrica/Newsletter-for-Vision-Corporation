@@ -2,21 +2,27 @@ const axios = require('axios');
 
 const BREVO_URL = 'https://api.brevo.com/v3/smtp/email';
 
-const sendNewsletter = async (toEmail, subject, htmlContent) => {
+const sendMail = async (
+  senderName,
+  senderEmail,
+  toEmail,
+  subject,
+  htmlContent
+) => {
   try {
     const response = await axios.post(
       BREVO_URL,
       {
         sender: {
-          name: 'Vision Corporation',
-          email: 'kwesiamissah020@gmail.com',
+          name: senderName,
+          email: senderEmail,
         },
         to: [
           {
             email: toEmail,
           },
         ],
-        subject: subject,
+        subject,
         htmlContent,
       },
       {
@@ -35,4 +41,4 @@ const sendNewsletter = async (toEmail, subject, htmlContent) => {
   }
 };
 
-module.exports = sendNewsletter;
+module.exports = sendMail;

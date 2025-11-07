@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Subscriber = require('../model/subscriberModel');
-const sendNewsletter = require('../brevoMail');
+const sendMail = require('../utils/brevoMail');
 const { renderTemplate } = require('../utils/renderTemplate');
 
 exports.subscribeUser = async (req, res) => {
@@ -62,7 +62,7 @@ exports.unsubscribeUser = async (req, res) => {
   }
 };
 
-exports.sendNewsletterToAll = async (req, res) => {
+exports.sendNewsletter = async (req, res) => {
   try {
     const subscribers = await Subscriber.find({ subscribed: true });
 
@@ -86,7 +86,13 @@ exports.sendNewsletterToAll = async (req, res) => {
         unsubscribeUrl,
       });
 
-      await sendNewsletter(subscriber.email, subject, htmlContent);
+      await sendMail(
+        'Vision Corporation',
+        'visioncorporationafrica@gmail.com',
+        subscriber.email,
+        subject,
+        htmlContent
+      );
     }
 
     res

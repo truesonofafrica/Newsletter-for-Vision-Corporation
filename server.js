@@ -7,9 +7,18 @@ const cors = require('cors');
 app.use(cors());
 
 const newsletterRoute = require('./routes/newsletterRoute');
+const uptimeRobotRoute = require('./routes/uptimeRobotRoute');
+const contactUsRoute = require('./routes/contactUsRoute');
+
 app.use(express.json());
 
 app.use('/api/v1/newsletter', newsletterRoute);
+app.use('/api/v1/uptime-robot', uptimeRobotRoute);
+app.use('/api/v1/contact-us', contactUsRoute);
+
+app.all('*splat', (req, res) => {
+  res.status(404).json({ status: 'fail', message: 'Route not found' });
+});
 
 const PORT = process.env.PORT || 5000;
 
