@@ -1,4 +1,3 @@
-const nodemailer = require('nodemailer');
 const sendMail = require('../utils/brevoMail');
 
 const brevoContactUs = async (req, res) => {
