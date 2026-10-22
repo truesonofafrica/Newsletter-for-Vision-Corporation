@@ -22,7 +22,7 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   const DB = process.env.MONGO_URL.replace(
-    '<<Password>>',
+    '<PASSWORD>',
     process.env.MONGO_PASSWORD
   );
   try {

@@ -2,9 +2,9 @@ const sendMail = require('../utils/brevoMail');
 
 const brevoContactUs = async (req, res) => {
   try {
-    const { name, email, subject, messageCategory, message } = req.body;
+    const { name, email, subject, phone, businessName, message } = req.body;
 
-    if (!name || !email || !subject || !messageCategory || !message) {
+    if (!name || !email || !subject || !message) {
       return res
         .status(400)
         .json({ status: 'fail', message: 'All fields are required' });
@@ -14,7 +14,8 @@ const brevoContactUs = async (req, res) => {
     <h3>Subject: ${subject}</h3>
     <p><strong>Name:</strong> ${name}</p>
     <p><strong>Email:</strong> ${email}</p>
-    <p><strong>Category:</strong> ${messageCategory}</p>
+    <p><strong>Business Name:</strong> ${businessName}
+    <p><strong>Phone:</strong> ${phone}</p>
     <p><strong>Message:</strong> ${message}</p>
   `;
     await sendMail(

@@ -95,6 +95,7 @@ exports.sendNewsletter = async (req, res) => {
       );
     }
 
+    console.log(token);
     res
       .status(200)
       .json({ message: 'Newsletter sent successfully to all subscribers.' });
